@@ -1,0 +1,36 @@
+parameter,value,description
+tstart,120,time start of injection [s]
+tstop,150,time end of injection [s]
+dt,0.0025,time step = t / Nt
+Q,240,volumetric flowrate at inlet [L/min]
+P,1,pressure [bar]
+Tsc,300,temperature standard conditions [celcius]
+T,573,temperature [kelvin] = Tsc + 273
+rho,0.020991108,Density = P / RT
+R,0.08314,universal gas constant
+Vcoil,0.0012,volume of the injection coil [m^3]
+D_CPOX_UPPER,3,diameter of the upper section of CPOX [in]
+L_CPOX_UPPER,9,length of the upper section of CPOX [in]
+Nz_CPOX_UPPER,20,number of integration sections
+D_CPOX_LOWER,1.5,diameter of the lower section of CPOX [in]
+L_CPOX_LOWER,24,length of the lower section of CPOX [in]
+Nz_CPOX_LOWER,20,number of integration sections
+D_FT,8,diameter of FT reactor [in]
+L_FT,2.4,length of FT reactor [m]
+Nz_FT,20,number of integration sections
+Xa,0.000000785398,cross sectional area [m^2]
+dz,0.04,height of integration section = L / Nz
+V,0.00000015708,Volume = Xa * L [m^3]
+dV,0.0000000314159,integration section volume = V / Nz
+y1,0,mole fraction [kmol / kg]
+y2,0,mole fraction [kmol / kg]
+y3,0,mole fraction [kmol / kg]
+y4,0,mole fraction [kmol / kg]
+y5,0,mole fraction [kmol / kg]
+y6,0,mole fraction [kmol / kg]
+c1,0,Concentration = y1 * P1 / RT [kmol / kg]
+c2,0,Concentration = y2 * P2 / RT [kmol / kg]
+c3,0,Concentration = y3 * P3 / RT [kmol / kg]
+c4,0,Concentration = y4 * P4 / RT [kmol / kg]
+c5,0,Concentration = y5 * P5 / RT [kmol / kg]
+c6,0,Concentration = y6 * P6 / RT [kmol / kg]
