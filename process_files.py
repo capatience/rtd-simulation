@@ -1,5 +1,4 @@
-import json
-import csv
+import json, csv
 import pandas as pd
 
 def import_data_mahdi(filename:str) -> pd.DataFrame:

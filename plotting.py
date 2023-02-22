@@ -1,4 +1,4 @@
-import process_files
+import process_files, foobank
 import pandas as pd
 import numpy as np
 import matplotlib.pyplot as plt
@@ -24,21 +24,11 @@ def plot_sim(data: pd.DataFrame, sections: list=[1]):
     plt.show()
     return
 
-def extract_section_names(data: pd.DataFrame) -> list:
-    '''
-    extracts the integer columns from a dataframe and returns them in a list
-    '''
-    sections = []
-    for c in data.columns:
-        try:
-            if (isinstance(int(c), int)): sections.append(c)
-        except:
-            continue
-    return sections
+
 
 def plot_sim_color(data:pd.DataFrame):
     ax = plt.subplot()
-    cols = extract_section_names(data)
+    cols = foobank.get_section_names(data)
     im = ax.imshow(data[cols], aspect="auto")
 
     # changing the y-labels
@@ -66,7 +56,7 @@ def plot_sim_color(data:pd.DataFrame):
 def main():
     filename = "./output/test_data2.csv"
     df = process_files.import_sim_data(filename)
-    sections = extract_section_names(data=df)
+    sections = foobank.get_section_names(data=df)
     # plot_sim(data=df, sections=sections)
     plot_sim_color(df)
     return

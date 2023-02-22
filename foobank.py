@@ -1,6 +1,5 @@
 import pandas as pd
 import numpy as np
-import math
 
 # GENERIC MATH
 
@@ -71,3 +70,17 @@ def propagate(
             # print("")
         
     return C
+
+# RANDOM
+
+def get_section_names(data: pd.DataFrame) -> list:
+    '''
+    extracts the integer columns from a dataframe and returns them in a list
+    '''
+    sections = []
+    for c in data.columns:
+        try:
+            if (isinstance(int(c), int)): sections.append(c)
+        except:
+            continue
+    return sections
