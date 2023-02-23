@@ -29,7 +29,7 @@ def plot_sim(data: pd.DataFrame, sections: list=[1]):
 def plot_sim_color(data:pd.DataFrame):
     ax = plt.subplot()
     cols = foobank.get_section_names(data)
-    im = ax.imshow(data[cols], aspect="auto")
+    im = ax.imshow(data[cols], aspect="auto", interpolation='none')
 
     # changing the y-labels
     tbeg = 0
@@ -54,7 +54,7 @@ def plot_sim_color(data:pd.DataFrame):
     return
 
 def main():
-    filename = "./output/test_data2.csv"
+    filename = "./output/test_data.csv"
     df = process_files.import_sim_data(filename)
     sections = foobank.get_section_names(data=df)
     # plot_sim(data=df, sections=sections)

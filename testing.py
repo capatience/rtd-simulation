@@ -2,8 +2,8 @@ import numpy as np
 import matplotlib.pyplot as plt
 from matplotlib.animation import FuncAnimation
 
-
 xdata, ydata = [], []
+fig, ax = plt.subplots()
 ln, = ax.plot([], [], 'ro')
 
 def init():
