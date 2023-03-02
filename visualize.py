@@ -47,11 +47,16 @@ dataAll = df.loc[:, cols].values
 dataCPOXUPPER = df.loc[:, shapes['CPOX_UPPER_COLS']].values
 dataCPOXLOWER = df.loc[:, shapes['CPOX_LOWER_COLS']].values
 dataFT = df.loc[:, shapes['FT_COLS']].values
-frames = dataAll.shape[0]
-fps = 120 # frames per second
-spf = 0.01 # seconds per frame
 timeOffset = df.t.iloc[0]
 timeFinal = df.t.iloc[-1] - timeOffset
+
+# plotting rate
+fastforward = 10
+totalframes = dataAll.shape[0]
+frames = int(totalframes / fastforward)
+fps = 120 # frames per second
+spf = 0.01 # seconds per frame
+
 
 # FIGURE
 gridspec_kw = {
@@ -107,12 +112,13 @@ def init():
     return [imCPOXUPPER, imCPOXLOWER, imFT]
 
 def animate(frame):
-    print(f"{frame/frames*100:.0f}%")
+    progress = frame/frames*100
+    if (progress%5 == 0): print(f"Animating...{progress:.0f}%")
     plt.title(f"{(df.t.iloc[frame]-timeOffset):.1f}/{timeFinal:.1f}") # 
     
-    imCPOXUPPER.set_data(getDataDisplayed(data=dataCPOXUPPER, row=frame))
-    imCPOXLOWER.set_data(getDataDisplayed(data=dataCPOXLOWER, row=frame))
-    imFT.set_data(getDataDisplayed(data=dataFT, row=frame))
+    imCPOXUPPER.set_data(getDataDisplayed(data=dataCPOXUPPER, row=frame*fastforward))
+    imCPOXLOWER.set_data(getDataDisplayed(data=dataCPOXLOWER, row=frame*fastforward))
+    imFT.set_data(getDataDisplayed(data=dataFT, row=frame*fastforward))
     return [imCPOXUPPER, imCPOXLOWER, imFT]
 
 def save_animation(filename: str, fps: int, save: bool):
