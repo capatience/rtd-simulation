@@ -6,14 +6,15 @@ import seaborn as sns
 sns.set_style()
 
 CSVFILEPATH = "./parameters.csv"
-MAHDI_DATA = "./data/data-mahdi/400C_15bar_12lpm_73nlpm_repeat.csv"
+# MAHDI_DATA = "./data/data-mahdi/400C_15bar_12lpm_73nlpm_repeat.csv"
+OUTPUT_FILENAME = "test_data2"
 
 def main():
     # load the parameters (set by the user)
     parameters = process_files.csv_to_dict(CSVFILEPATH)
 
-    # select the dataset you want to load
-    data = process_files.import_data_mahdi(MAHDI_DATA)
+    # select the dataset you want to load (not necessary for simulation)
+    # data = process_files.import_data_mahdi(MAHDI_DATA)
 
 
     # PARAMETERS
@@ -21,7 +22,8 @@ def main():
     # time
     tstart = parameters['tstart'] # time of injection [s]
     tstop = parameters['tstop'] # time when the injection stops (used for simulation) [s]
-    # duration_injection = tstop - tstart
+    duration_injection = parameters['dur_injection']
+    tinjection = parameters['tinjection']
 
     # inlet (0)
     Q0 = parameters['Q'] /1000 /60  # volumetric flowrate at the inlet [m^3/s]
@@ -50,7 +52,10 @@ def main():
     # data w.r.t. TIME
     timestep = parameters['dt'] # timestep
     t = np.arange(tstart,tstop,timestep)
-    inlet = np.ones_like(t) # assumes a constant input of 1
+    tinject_start_index = foobank.find_nearest_ind(t, tinjection)
+    tinject_end_index = foobank.find_nearest_ind(t, tinjection + duration_injection)
+    inlet = np.zeros_like(t) # assumes a constant input of 1
+    inlet[tinject_start_index: tinject_end_index] = 1
     IC = 0 # starts empty
 
     # data w.r.t. SECTION
@@ -62,15 +67,16 @@ def main():
         inlet = inlet,
         dV = dV,
         Q = Q,
-        IC = IC
+        IC = IC,
+        verbose=True
     )
 
-    sim_downsample_cols = downsampleBy(n=4, data=sim, axis=1)
+    sim_downsample_cols = downsampleBy(n=1, data=sim, axis=1)
 
     dfsim = sim_to_df(sim=sim_downsample_cols, t=t, inlet=inlet)
     dfsim_downsample_time = downsampleBy_df(n=4, df=dfsim)
 
-    process_files.export_df_data(dfsim_downsample_time, "test_data2")
+    process_files.export_df_data(dfsim_downsample_time, OUTPUT_FILENAME)
     return
 
 def downsampleBy(n: int, data:np.ndarray, axis:int=2) -> np.ndarray:
@@ -101,10 +107,12 @@ def sim_to_df(
     '''
     converts the numpy data into a unified dataframe
     '''
+    print("Saving data...", end="")
     cols = [sec for sec in range(1,sim.shape[1]+1)]
     df = pd.DataFrame(data=sim, columns=cols)
     df.insert(loc=0, column='inlet', value=inlet)
     df.insert(loc=0, column='t', value=t)
+    print("Complete")
     return df
 
 if __name__ == "__main__":
