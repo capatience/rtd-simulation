@@ -10,3 +10,11 @@ Activate the venv: $ source env/bin/activate
 Update requirements: $ pip3 freeze > requirements.txt
 Install dependencies: $ pip3 install -r requirements.txt
 Deactivate venv: $ deactivate
+
+Pipeline is as follows:
+
+1. Update parameters.csv for the simulation you want to run.
+2. In main.py, update OUTPUT_FILENAME to what you want.
+3. Run main.py.
+4. In visualize.py, update INPUT_FILENAME to what OUTPUT_FILENAME was.
+5. Run visualize.py.

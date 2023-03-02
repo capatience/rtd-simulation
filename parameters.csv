@@ -1,8 +1,10 @@
 parameter,value,description
-tstart,120,time start of injection [s]
-tstop,150,time end of injection [s]
+tstart,0,time start of experiment [s]
+tstop,100,time end of experiment [s]
+tinjection,0,time start of injection [s]
+dur_injection,2,duration of injection [s]
 dt,0.0025,time step = t / Nt
-Q,240,volumetric flowrate at inlet [L/min]
+Q,30,volumetric flowrate at inlet [L/min]
 P,1,pressure [bar]
 Tsc,300,temperature standard conditions [celcius]
 T,573,temperature [kelvin] = Tsc + 273
@@ -17,7 +19,7 @@ L_CPOX_LOWER,24,length of the lower section of CPOX [in]
 Nz_CPOX_LOWER,20,number of integration sections
 D_FT,8,diameter of FT reactor [in]
 L_FT,2.4,length of FT reactor [m]
-Nz_FT,20,number of integration sections
+Nz_FT,5,number of integration sections
 Xa,0.000000785398,cross sectional area [m^2]
 dz,0.04,height of integration section = L / Nz
 V,0.00000015708,Volume = Xa * L [m^3]
