@@ -25,23 +25,20 @@ def rangeCols(beg: int, end: int) -> list[str]:
     '''
     return listIntToString(listRangeInclusive(beg, end))
 
-def getDataDisplayed(data: np.ndarray, row: int, thickness: int) -> np.ndarray:
-    dataDisplayed = np.ones([thickness, data.shape[1]]) * data[row]
+def getDataDisplayed(data: np.ndarray, row: int) -> np.ndarray:
+    dataDisplayed = np.ones([1, data.shape[1]]) * data[row]
     return dataDisplayed
 
 # GRAPH VISUALS
+parameters = process_files.csv_to_dict("./parameters.csv")
+v1size = parameters['Nz_CPOX_UPPER']
+v2size = parameters['Nz_CPOX_LOWER']
+v3size = parameters['Nz_FT']
 shapes = {
-    'CPOX_UPPER_COLS': rangeCols(1,20),
-    'CPOX_LOWER_COLS': rangeCols(21,40),
-    'FT_COLS': rangeCols(41,60),
-    'CPOX_LOWER_VOLUME': 10,
-    'CPOX_UPPER_VOLUME': 30,
-    'FT_VOLUME': 100
+    'CPOX_UPPER_COLS': rangeCols(1,v1size),
+    'CPOX_LOWER_COLS': rangeCols(v1size+1,v1size+v2size),
+    'FT_COLS': rangeCols(v1size+v2size+1,v1size+v2size+v3size),
 }
-baseThickness = 2
-upperThickness = baseThickness# * shapes['CPOX_UPPER_VOLUME']
-lowerThickness = baseThickness# * shapes['CPOX_LOWER_VOLUME']
-ftThickness = baseThickness# * shapes['FT_VOLUME']
 
 # GET DATA
 df = process_files.import_sim_data(INPUT_FILENAME)
@@ -75,44 +72,47 @@ spec = gridspec.GridSpec(ncols=3, nrows=2, width_ratios=[1,1,2], height_ratios=[
 
 ax1 = fig.add_subplot(spec[0,0])
 imCPOXUPPER = plt.imshow(
-    X = getDataDisplayed(data=dataCPOXUPPER, row=0, thickness=upperThickness),
+    X = getDataDisplayed(data=dataCPOXUPPER, row=0),
     interpolation='none',
     aspect = 'auto',
     vmin = 0,
     vmax = 1
 )
+# plt.axes("off")
 
 ax2 = fig.add_subplot(spec[0,1])
 imCPOXLOWER = plt.imshow(
-    X = getDataDisplayed(data=dataCPOXLOWER, row=0, thickness=lowerThickness),
+    X = getDataDisplayed(data=dataCPOXLOWER, row=0),
     interpolation='none',
     aspect = 'auto',
     vmin = 0,
     vmax = 1
 )
+# plt.axes("off")
 
 ax3 = fig.add_subplot(spec[:,2])
 imFT = plt.imshow(
-    X = getDataDisplayed(data=dataFT, row=0, thickness=ftThickness),
+    X = getDataDisplayed(data=dataFT, row=0),
     interpolation='none',
     aspect = 'auto',
     vmin = 0,
     vmax = 1
 )
+# plt.axes("off")
 
 def init():
-    imCPOXUPPER.set_data(getDataDisplayed(data=dataCPOXUPPER, row=0, thickness=upperThickness))
-    imCPOXLOWER.set_data(getDataDisplayed(data=dataCPOXLOWER, row=0, thickness=lowerThickness))
-    imFT.set_data(getDataDisplayed(data=dataFT, row=0, thickness=ftThickness))
+    imCPOXUPPER.set_data(getDataDisplayed(data=dataCPOXUPPER, row=0))
+    imCPOXLOWER.set_data(getDataDisplayed(data=dataCPOXLOWER, row=0))
+    imFT.set_data(getDataDisplayed(data=dataFT, row=0))
     return [imCPOXUPPER, imCPOXLOWER, imFT]
 
 def animate(frame):
     print(f"{frame/frames*100:.0f}%")
     plt.title(f"{(df.t.iloc[frame]-timeOffset):.1f}/{timeFinal:.1f}") # 
     
-    imCPOXUPPER.set_data(getDataDisplayed(data=dataCPOXUPPER, row=frame, thickness=upperThickness))
-    imCPOXLOWER.set_data(getDataDisplayed(data=dataCPOXLOWER, row=frame, thickness=lowerThickness))
-    imFT.set_data(getDataDisplayed(data=dataFT, row=frame, thickness=ftThickness))
+    imCPOXUPPER.set_data(getDataDisplayed(data=dataCPOXUPPER, row=frame))
+    imCPOXLOWER.set_data(getDataDisplayed(data=dataCPOXLOWER, row=frame))
+    imFT.set_data(getDataDisplayed(data=dataFT, row=frame))
     return [imCPOXUPPER, imCPOXLOWER, imFT]
 
 def save_animation(filename: str, fps: int, save: bool):
@@ -123,5 +123,5 @@ def save_animation(filename: str, fps: int, save: bool):
 
 anim = FuncAnimation(fig, animate, init_func=init, frames=frames, interval=1, blit=True, repeat=False)
 
-# plt.show()
-save_animation(filename='./animations/basic_animation.mp4', fps=fps, save=True)
+plt.show()
+# save_animation(filename='./animations/basic_animation.mp4', fps=fps, save=True)
