@@ -75,6 +75,44 @@ def propagate(
     print("Simulation complete")
     return C
 
+# DATA PROCESSING
+
+def downsampleBy(n: int, data:np.ndarray, axis:int=2) -> np.ndarray:
+    '''
+    downsamples numpy data by n
+    axis=0 is rows, axis=1 is columns, axis=2 is both
+    '''
+    match axis:
+        case 0:
+            return data[::n, :]
+        case 1:
+            return data[:, ::n]
+        case 2:
+            return data[::n, ::n]
+        case _:
+            return data
+
+def downsampleBy_df(n: int, df:pd.DataFrame) -> pd.DataFrame:
+    inds = np.arange(start=0, stop=df.shape[0], step=n)
+    downsampled_df = df.iloc[inds, :].copy()
+    return downsampled_df
+
+def sim_to_df(
+    sim: np.ndarray,
+    t: np.ndarray,
+    inlet: np.ndarray
+) -> pd.DataFrame:
+    '''
+    converts the numpy data into a unified dataframe
+    '''
+    print("Saving data...", end="")
+    cols = [sec for sec in range(1,sim.shape[1]+1)]
+    df = pd.DataFrame(data=sim, columns=cols)
+    df.insert(loc=0, column='inlet', value=inlet)
+    df.insert(loc=0, column='t', value=t)
+    print("Complete")
+    return df
+
 # RANDOM
 
 def find_nearest_ind(array:np.ndarray, value):

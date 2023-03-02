@@ -71,49 +71,14 @@ def main():
         verbose=True
     )
 
-    sim_downsample_cols = downsampleBy(n=1, data=sim, axis=1)
+    sim_downsample_cols = foobank.downsampleBy(n=1, data=sim, axis=1)
 
-    dfsim = sim_to_df(sim=sim_downsample_cols, t=t, inlet=inlet)
-    dfsim_downsample_time = downsampleBy_df(n=4, df=dfsim)
+    dfsim = foobank.sim_to_df(sim=sim_downsample_cols, t=t, inlet=inlet)
+    dfsim_downsample_time = foobank.downsampleBy_df(n=4, df=dfsim)
 
     process_files.export_df_data(dfsim_downsample_time, OUTPUT_FILENAME)
     return
 
-def downsampleBy(n: int, data:np.ndarray, axis:int=2) -> np.ndarray:
-    '''
-    downsamples numpy data by n
-    axis=0 is rows, axis=1 is columns, axis=2 is both
-    '''
-    match axis:
-        case 0:
-            return data[::n, :]
-        case 1:
-            return data[:, ::n]
-        case 2:
-            return data[::n, ::n]
-        case _:
-            return data
-
-def downsampleBy_df(n: int, df:pd.DataFrame) -> pd.DataFrame:
-    inds = np.arange(start=0, stop=df.shape[0], step=n)
-    downsampled_df = df.iloc[inds, :].copy()
-    return downsampled_df
-
-def sim_to_df(
-    sim: np.ndarray,
-    t: np.ndarray,
-    inlet: np.ndarray
-) -> pd.DataFrame:
-    '''
-    converts the numpy data into a unified dataframe
-    '''
-    print("Saving data...", end="")
-    cols = [sec for sec in range(1,sim.shape[1]+1)]
-    df = pd.DataFrame(data=sim, columns=cols)
-    df.insert(loc=0, column='inlet', value=inlet)
-    df.insert(loc=0, column='t', value=t)
-    print("Complete")
-    return df
 
 if __name__ == "__main__":
     main()
