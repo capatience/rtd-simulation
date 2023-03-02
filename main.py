@@ -1,3 +1,4 @@
+import argparse
 import pandas as pd
 import numpy as np
 import process_files, foobank
@@ -6,16 +7,16 @@ import seaborn as sns
 sns.set_style()
 
 CSVFILEPATH = "./parameters.csv"
-# MAHDI_DATA = "./data/data-mahdi/400C_15bar_12lpm_73nlpm_repeat.csv"
-OUTPUT_FILENAME = "test_data2"
 
-def main():
+def init_argparse():
+    parser = argparse.ArgumentParser(description="Generates csv simulation data from conditions in parameters.csv")
+    parser.add_argument("-o", "--output", help="name of the output file (exclude extension)", type=str)
+    return parser
+
+def main(args):
+    output_filename = args.output if (args.output) else "output"
     # load the parameters (set by the user)
     parameters = process_files.csv_to_dict(CSVFILEPATH)
-
-    # select the dataset you want to load (not necessary for simulation)
-    # data = process_files.import_data_mahdi(MAHDI_DATA)
-
 
     # PARAMETERS
 
@@ -76,9 +77,11 @@ def main():
     dfsim = foobank.sim_to_df(sim=sim_downsample_cols, t=t, inlet=inlet)
     dfsim_downsample_time = foobank.downsampleBy_df(n=4, df=dfsim)
 
-    process_files.export_df_data(dfsim_downsample_time, OUTPUT_FILENAME)
+    process_files.export_df_data(dfsim_downsample_time, output_filename)
     return
 
 
 if __name__ == "__main__":
-    main()
+    parser = init_argparse()
+    args = parser.parse_args()
+    main(args)
