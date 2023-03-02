@@ -37,6 +37,7 @@ def propagate(
     dV: np.ndarray,
     Q: np.ndarray,
     IC: float = 0,
+    verbose: bool = False
 ) -> np.ndarray:
     '''
     Propagates an isolated gas at a volumetric flowrate (Q) through arbitraty volume differentials (dV).
@@ -46,7 +47,7 @@ def propagate(
     Q: mx1 array of the volumetric flowrate of each section m
     IC: float representing the initial concentration of the gas in each section of the reactor at the start
     '''
-
+    
     nTimesteps = t.shape[0]
     nSections = dV.shape[0]
     
@@ -66,12 +67,18 @@ def propagate(
             if (factor > 1):
                 print(factor)
             C[k,i] = thisSection - factor * (thisSection - previousSection)
-            # print(f"{C[k,i]} at time {t[k]}, section {i}")
-            # print("")
-        
+
+        if (verbose):
+            progress = k/nTimesteps*100
+            if (progress%5 == 0):
+                print(f"Simulating... {int(progress)}")
+    print("Simulation complete")
     return C
 
 # RANDOM
+
+def find_nearest_ind(array:np.ndarray, value):
+    return (np.abs(array - value)).argmin()
 
 def get_section_names(data: pd.DataFrame) -> list:
     '''
